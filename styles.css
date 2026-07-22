@@ -1,0 +1,462 @@
+/* ==========================================================
+   TOKENS
+   ========================================================== */
+:root {
+  --bg-deep:      #0E1113;
+  --bg-sidebar:   #0B0D0F;
+  --bg-panel:     #14181B;
+  --line:         rgba(237, 234, 227, 0.09);
+  --line-strong:  rgba(237, 234, 227, 0.16);
+
+  --text-primary: #EDEAE3;
+  --text-muted:   #8B9198;
+  --text-faint:   #565C62;
+
+  --accent:       #F2A93B; /* amber / LED */
+  --accent-dim:   rgba(242, 169, 59, 0.35);
+  --accent-teal:  #4FB6A8;
+
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-body:    'Inter', sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
+
+  --sidebar-w: 300px;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--bg-deep);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { animation: none !important; transition: none !important; }
+}
+
+/* ==========================================================
+   LAYOUT
+   ========================================================== */
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ==========================================================
+   SIDEBAR
+   ========================================================== */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: var(--sidebar-w);
+  height: 100vh;
+  background: var(--bg-sidebar);
+  border-right: 1px solid var(--line);
+  z-index: 10;
+}
+
+.sidebar-inner {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 40px 32px;
+}
+
+/* --- identity --- */
+.identity {
+  margin-bottom: 56px;
+}
+
+.identity-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: var(--accent);
+  margin: 0 0 12px;
+}
+
+.identity-name {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 1.15;
+  margin: 0 0 8px;
+  color: var(--text-primary);
+}
+
+.identity-tagline {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* --- table of contents / nav --- */
+.toc {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding-left: 22px;
+  flex: 1;
+}
+
+.toc::before {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 8px;
+  bottom: 8px;
+  width: 1px;
+  background: var(--line-strong);
+}
+
+.toc-link {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 11px 0;
+  color: var(--text-muted);
+  transition: color 0.2s ease;
+}
+
+.toc-link::before {
+  content: "";
+  position: absolute;
+  left: -22px;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--bg-sidebar);
+  border: 1px solid var(--text-faint);
+  transition: all 0.25s ease;
+}
+
+.toc-link:hover {
+  color: var(--text-primary);
+}
+
+.toc-link.is-active {
+  color: var(--text-primary);
+}
+
+.toc-link.is-active::before {
+  background: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-dim);
+}
+
+.toc-index {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-faint);
+}
+
+.toc-link.is-active .toc-index {
+  color: var(--accent);
+}
+
+.toc-label {
+  font-family: var(--font-display);
+  font-size: 14.5px;
+  font-weight: 500;
+}
+
+/* --- trace rail decorative spacer --- */
+.trace-rail {
+  height: 1px;
+}
+
+/* --- social icons --- */
+.social-row {
+  display: flex;
+  gap: 14px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+}
+
+.social-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  color: var(--text-muted);
+  border: 1px solid var(--line);
+  transition: all 0.2s ease;
+}
+
+.social-icon:hover {
+  color: var(--bg-deep);
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+/* ==========================================================
+   CONTENT
+   ========================================================== */
+.content {
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  padding: 72px 64px 120px;
+  max-width: 900px;
+}
+
+.panel {
+  padding-bottom: 88px;
+  margin-bottom: 88px;
+  border-bottom: 1px solid var(--line);
+  scroll-margin-top: 48px;
+}
+
+.panel:last-child {
+  border-bottom: none;
+}
+
+.panel-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  color: var(--accent);
+  margin: 0 0 14px;
+}
+
+.panel-title {
+  font-family: var(--font-display);
+  font-size: 40px;
+  font-weight: 600;
+  margin: 0 0 28px;
+  letter-spacing: -0.01em;
+}
+
+.panel-body {
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--text-muted);
+  max-width: 620px;
+}
+
+.panel-body p {
+  margin: 0 0 18px;
+}
+
+.panel-body p:last-child {
+  margin-bottom: 0;
+}
+
+/* ==========================================================
+   LINKEDIN POST CARDS
+   ========================================================== */
+.post-card {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 24px 26px;
+  margin-bottom: 20px;
+  background: var(--bg-panel);
+}
+
+.post-card:last-child {
+  margin-bottom: 0;
+}
+
+.post-card-meta {
+  margin-bottom: 10px;
+}
+
+.post-date {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-faint);
+}
+
+.post-text {
+  color: var(--text-primary);
+  margin: 0 0 16px !important;
+}
+
+.post-link {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--accent-teal);
+}
+
+.post-link:hover {
+  color: var(--accent);
+}
+
+/* ==========================================================
+   EXPERIENCE ENTRIES
+   ========================================================== */
+.entry {
+  padding: 22px 0;
+  border-top: 1px solid var(--line);
+}
+
+.entry:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.entry-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.entry-role {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.entry-dates {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-faint);
+  white-space: nowrap;
+}
+
+.entry-org {
+  font-size: 13.5px;
+  color: var(--accent-teal);
+  margin: 6px 0 10px;
+}
+
+.entry-desc {
+  margin: 0 !important;
+}
+
+/* ==========================================================
+   PROJECTS
+   ========================================================== */
+.project-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  max-width: 100%;
+}
+
+.project-card {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 24px;
+  background: var(--bg-panel);
+  display: flex;
+  flex-direction: column;
+}
+
+.project-name {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 10px;
+}
+
+.project-desc {
+  font-size: 14.5px;
+  line-height: 1.6;
+  margin: 0 0 16px !important;
+  flex: 1;
+}
+
+.project-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.tag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent);
+  border: 1px solid var(--accent-dim);
+  border-radius: 6px;
+  padding: 3px 8px;
+}
+
+.project-link {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--accent-teal);
+}
+
+.project-link:hover {
+  color: var(--accent);
+}
+
+/* ==========================================================
+   RESPONSIVE
+   ========================================================== */
+@media (max-width: 860px) {
+  .layout {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    position: relative;
+    width: 100%;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .sidebar-inner {
+    padding: 28px 24px;
+  }
+
+  .identity {
+    margin-bottom: 28px;
+  }
+
+  .toc {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 4px 20px;
+    padding-left: 0;
+  }
+
+  .toc::before {
+    display: none;
+  }
+
+  .toc-link::before {
+    display: none;
+  }
+
+  .toc-link {
+    padding: 6px 0;
+  }
+
+  .content {
+    margin-left: 0;
+    padding: 48px 24px 96px;
+  }
+
+  .panel-title {
+    font-size: 30px;
+  }
+
+  .project-grid {
+    grid-template-columns: 1fr;
+  }
+}

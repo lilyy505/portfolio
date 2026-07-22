@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Name — Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- ============ LEFT SIDEBAR ============ -->
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <header class="identity">
+        <p class="identity-eyebrow">/// engineer.build()</p>
+        <h1 class="identity-name">Your Name</h1>
+        <p class="identity-tagline">EECS @ UC Berkeley — hardware &amp; systems</p>
+      </header>
+
+      <nav class="toc" aria-label="Section navigation">
+        <a href="#about" class="toc-link" data-section="about">
+          <span class="toc-index">01</span>
+          <span class="toc-label">About Me</span>
+        </a>
+        <a href="#linkedin" class="toc-link" data-section="linkedin">
+          <span class="toc-index">02</span>
+          <span class="toc-label">LinkedIn Post</span>
+        </a>
+        <a href="#experience" class="toc-link" data-section="experience">
+          <span class="toc-index">03</span>
+          <span class="toc-label">Experience</span>
+        </a>
+        <a href="#projects" class="toc-link" data-section="projects">
+          <span class="toc-index">04</span>
+          <span class="toc-label">Projects</span>
+        </a>
+      </nav>
+
+      <div class="trace-rail" aria-hidden="true"></div>
+
+      <footer class="social-row">
+        <a href="https://github.com/yourusername" target="_blank" rel="noopener" class="social-icon" aria-label="GitHub">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+            <path d="M12 0C5.37 0 0 5.5 0 12.3c0 5.44 3.44 10.05 8.21 11.68.6.12.82-.27.82-.6 0-.29-.01-1.06-.02-2.08-3.34.75-4.04-1.66-4.04-1.66-.55-1.44-1.34-1.83-1.34-1.83-1.09-.77.08-.75.08-.75 1.2.09 1.84 1.27 1.84 1.27 1.07 1.87 2.81 1.33 3.5 1.02.11-.79.42-1.33.76-1.64-2.67-.31-5.47-1.38-5.47-6.13 0-1.35.46-2.46 1.22-3.33-.12-.31-.53-1.56.12-3.25 0 0 1-.33 3.3 1.27a11.1 11.1 0 0 1 6 0c2.28-1.6 3.29-1.27 3.29-1.27.65 1.69.24 2.94.12 3.25.76.87 1.22 1.98 1.22 3.33 0 4.76-2.81 5.81-5.48 6.12.43.38.81 1.13.81 2.28 0 1.65-.02 2.98-.02 3.38 0 .33.22.72.83.6C20.56 22.34 24 17.73 24 12.3 24 5.5 18.63 0 12 0z"/>
+          </svg>
+        </a>
+        <a href="https://linkedin.com/in/yourusername" target="_blank" rel="noopener" class="social-icon" aria-label="LinkedIn">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+            <path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/>
+          </svg>
+        </a>
+      </footer>
+
+    </div>
+  </aside>
+
+  <!-- ============ RIGHT CONTENT ============ -->
+  <main class="content">
+
+    <section id="about" class="panel">
+      <p class="panel-eyebrow">01 / About Me</p>
+      <h2 class="panel-title">About Me</h2>
+      <div class="panel-body">
+        <p>
+          Write a few sentences about who you are, what you're studying, and what got
+          you into hardware / engineering / gaming / whatever your story is. This is the
+          place for the "why" behind your work — keep it conversational, not a résumé
+          restated in prose.
+        </p>
+        <p>
+          Second paragraph — what you're focused on right now, or what you're looking for
+          (internships, collaborators, research, etc).
+        </p>
+      </div>
+    </section>
+
+    <section id="linkedin" class="panel">
+      <p class="panel-eyebrow">02 / LinkedIn Post</p>
+      <h2 class="panel-title">Latest from LinkedIn</h2>
+      <div class="panel-body">
+
+        <article class="post-card">
+          <div class="post-card-meta">
+            <span class="post-date">Month Day, Year</span>
+          </div>
+          <p class="post-text">
+            Paste the text of a LinkedIn post here (or a short excerpt), so visitors get
+            the gist without leaving your site.
+          </p>
+          <a href="#" target="_blank" rel="noopener" class="post-link">View on LinkedIn →</a>
+        </article>
+
+        <article class="post-card">
+          <div class="post-card-meta">
+            <span class="post-date">Month Day, Year</span>
+          </div>
+          <p class="post-text">
+            Second post placeholder — duplicate this &lt;article class="post-card"&gt;
+            block for each additional post you want to feature (2-3 recommended).
+          </p>
+          <a href="#" target="_blank" rel="noopener" class="post-link">View on LinkedIn →</a>
+        </article>
+
+      </div>
+    </section>
+
+    <section id="experience" class="panel">
+      <p class="panel-eyebrow">03 / Experience</p>
+      <h2 class="panel-title">Experience</h2>
+      <div class="panel-body">
+
+        <article class="entry">
+          <div class="entry-head">
+            <h3 class="entry-role">Role Title</h3>
+            <span class="entry-dates">Mon Year — Mon Year</span>
+          </div>
+          <p class="entry-org">Company / Organization</p>
+          <p class="entry-desc">
+            One or two lines on what you did and what came of it. Lead with the
+            action and the outcome, not the job description.
+          </p>
+        </article>
+
+        <article class="entry">
+          <div class="entry-head">
+            <h3 class="entry-role">Role Title</h3>
+            <span class="entry-dates">Mon Year — Mon Year</span>
+          </div>
+          <p class="entry-org">Company / Organization</p>
+          <p class="entry-desc">
+            Duplicate this &lt;article class="entry"&gt; block for each additional
+            role, internship, or research position.
+          </p>
+        </article>
+
+      </div>
+    </section>
+
+    <section id="projects" class="panel">
+      <p class="panel-eyebrow">04 / Projects</p>
+      <h2 class="panel-title">Projects</h2>
+      <div class="panel-body project-grid">
+
+        <article class="project-card">
+          <h3 class="project-name">Project Name</h3>
+          <p class="project-desc">
+            One or two sentences on what it is, what problem it solves, or what you
+            learned building it.
+          </p>
+          <div class="project-tags">
+            <span class="tag">Tag</span>
+            <span class="tag">Tag</span>
+          </div>
+          <a href="#" target="_blank" rel="noopener" class="project-link">View project →</a>
+        </article>
+
+        <article class="project-card">
+          <h3 class="project-name">Project Name</h3>
+          <p class="project-desc">
+            Duplicate this &lt;article class="project-card"&gt; block for each
+            additional project (2-3 recommended to start).
+          </p>
+          <div class="project-tags">
+            <span class="tag">Tag</span>
+            <span class="tag">Tag</span>
+          </div>
+          <a href="#" target="_blank" rel="noopener" class="project-link">View project →</a>
+        </article>
+
+      </div>
+    </section>
+
+  </main>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
