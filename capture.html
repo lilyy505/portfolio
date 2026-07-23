@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Publish a LinkedIn post — Lily Nguyen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  .cap-wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 56px 24px 96px;
+  }
+  .cap-section {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--bg-panel);
+    padding: 24px 26px;
+    margin-bottom: 20px;
+  }
+  .cap-section h2 {
+    font-family: var(--font-display);
+    font-size: 17px;
+    font-weight: 600;
+    margin: 0 0 14px;
+  }
+  .cap-hint {
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--text-muted);
+    margin: 0 0 14px;
+  }
+  label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin: 0 0 6px;
+  }
+  input[type="text"], input[type="password"], input[type="date"], textarea {
+    width: 100%;
+    background: var(--bg-deep);
+    border: 1px solid var(--line-strong);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 14px;
+    padding: 10px 12px;
+    margin-bottom: 16px;
+  }
+  textarea { min-height: 190px; line-height: 1.6; resize: vertical; }
+  input:focus, textarea:focus { outline: none; border-color: var(--accent); }
+  .btn {
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    padding: 11px 20px;
+    cursor: pointer;
+    background: var(--accent);
+    color: #fff;
+  }
+  .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--line-strong);
+  }
+  .img-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .img-row img {
+    width: 56px; height: 56px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--line);
+    flex-shrink: 0;
+    background: var(--bg-deep);
+  }
+  .img-row span {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-faint);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+  }
+  .img-row button {
+    background: none; border: none;
+    color: var(--text-faint);
+    cursor: pointer;
+    font-size: 18px;
+    padding: 4px 8px;
+  }
+  .img-row button:hover { color: var(--text-primary); }
+  .cap-log {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.8;
+    color: var(--text-muted);
+    white-space: pre-wrap;
+    margin: 16px 0 0;
+  }
+  .ok   { color: #4FB6A8; }
+  .warn { color: var(--accent-text); }
+  .err  { color: #E2685F; }
+  .bm-link {
+    display: inline-block;
+    background: var(--accent);
+    color: #fff;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 14px;
+    padding: 10px 18px;
+    border-radius: 8px;
+    cursor: grab;
+  }
+  code {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    color: var(--accent-text);
+  }
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+
+<div class="cap-wrap">
+
+  <p class="panel-eyebrow">Private tool — not linked from the site</p>
+  <h1 class="panel-title" style="font-size:32px;">Publish a LinkedIn post</h1>
+
+  <!-- ===== SETUP (shown when there's no captured post) ===== -->
+  <section class="cap-section" id="setup">
+    <h2>One-time setup</h2>
+    <p class="cap-hint">
+      <strong>1.</strong> Drag this button to your bookmarks bar:
+    </p>
+    <p style="margin:0 0 18px;"><a class="bm-link" id="bookmarklet" href="#">Send to site</a></p>
+    <p class="cap-hint">
+      <strong>2.</strong> Create a GitHub token so this page can commit for you:
+      go to <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener" style="color:var(--accent-text)">Fine-grained tokens</a> →
+      <em>Only select repositories</em> → <code>portfolio</code> →
+      Repository permissions → <strong>Contents: Read and write</strong>. Paste it below.
+    </p>
+    <label for="token">GitHub token</label>
+    <input type="password" id="token" placeholder="github_pat_…" autocomplete="off">
+    <button class="btn" id="save-token">Save token on this device</button>
+    <p class="cap-hint" style="margin:14px 0 0;">
+      Stored in this browser only (localStorage, on your own domain — never on LinkedIn's).
+      Scoped to this one repo, so the worst it can do is edit your portfolio. Revoke anytime on GitHub.
+    </p>
+  </section>
+
+  <!-- ===== HOW TO USE ===== -->
+  <section class="cap-section" id="howto">
+    <h2>How to post</h2>
+    <p class="cap-hint" style="margin:0;">
+      Post on LinkedIn → open that post on its own page (click its timestamp, or ⋯ → <em>Copy link to post</em>) →
+      click <strong>Send to site</strong> in your bookmarks bar. You'll land back here with everything filled in,
+      you check it over, and hit Publish.
+    </p>
+  </section>
+
+  <!-- ===== REVIEW + PUBLISH ===== -->
+  <section class="cap-section hidden" id="review">
+    <h2>Review</h2>
+    <p class="cap-hint">Edit anything before it goes live — this is your last look.</p>
+
+    <label for="date">Date</label>
+    <input type="date" id="date">
+
+    <label for="text">Post text</label>
+    <textarea id="text"></textarea>
+
+    <label>Images</label>
+    <div id="images"></div>
+    <p class="cap-hint hidden" id="no-images" style="margin:0 0 16px;">No images on this post.</p>
+
+    <label for="url">Link to post</label>
+    <input type="text" id="url">
+
+    <button class="btn" id="publish">Publish to site</button>
+    <button class="btn btn-ghost" id="discard">Discard</button>
+
+    <p class="cap-log hidden" id="log"></p>
+  </section>
+
+</div>
+
+<script>
+// ==========================================================
+// CONFIG
+// ==========================================================
+const REPO_OWNER  = 'lilyy505';
+const REPO_NAME   = 'portfolio';
+const REPO_BRANCH = 'main';
+const KEEP_POSTS  = 10;   // how many posts to retain in posts.json
+const API = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents`;
+
+// ==========================================================
+// THE BOOKMARKLET
+// Defined here as a real function, then serialized into a
+// javascript: URL for the draggable link. Single source of truth.
+// ==========================================================
+function linkedInCapture(SITE) {
+  try {
+    var root =
+      document.querySelector('.feed-shared-update-v2') ||
+      document.querySelector('.fie-impression-container') ||
+      document.querySelector('main [data-urn]') ||
+      document.body;
+
+    var textEl = root.querySelector(
+      '.update-components-text, .feed-shared-update-v2__description, ' +
+      '.feed-shared-inline-show-more-text, [data-test-id*="commentary"]'
+    );
+    var text = textEl ? textEl.innerText : '';
+    text = text.replace(/\s*…\s*more\s*$/i, '').replace(/\s*see more\s*$/i, '').trim();
+
+    var seen = {};
+    var images = [].slice.call(root.querySelectorAll(
+      '.update-components-image img, .feed-shared-image img, ' +
+      'img.ivm-view-attr__img--centered, .update-components-linkedin-video img'
+    )).map(function (i) {
+      return i.currentSrc || i.src || '';
+    }).filter(function (u) {
+      if (!u || u.indexOf('licdn') === -1) return false;
+      if (/profile-displayphoto|company-logo|profile-framedphoto/.test(u)) return false;
+      if (seen[u]) return false;
+      seen[u] = 1;
+      return true;
+    });
+
+    var urn = (root.getAttribute && (root.getAttribute('data-urn') || root.getAttribute('data-id'))) || '';
+    if (!/urn:li:(activity|share|ugcPost):\d+/.test(urn)) {
+      var inUrl = location.href.match(/urn:li:(?:activity|share|ugcPost):\d+/);
+      if (inUrl) {
+        urn = inUrl[0];
+      } else {
+        var el = document.querySelector('[data-urn*="activity"], [data-id*="activity"]');
+        urn = el ? (el.getAttribute('data-urn') || el.getAttribute('data-id') || '') : '';
+      }
+    }
+    var url = /urn:li:(activity|share|ugcPost):\d+/.test(urn)
+      ? 'https://www.linkedin.com/feed/update/' + urn + '/'
+      : location.href.split('?')[0];
+
+    var date = new Date().toISOString().slice(0, 10);
+    var id = urn.match(/(\d{15,})/);
+    if (id && typeof BigInt === 'function') {
+      try {
+        var d = new Date(Number(BigInt(id[1]) >> BigInt(22)));
+        if (d.getFullYear() > 2010 && d.getTime() < Date.now() + 86400000) {
+          date = d.toISOString().slice(0, 10);
+        }
+      } catch (e) { /* fall back to today */ }
+    }
+
+    if (!text && !images.length) {
+      alert("Couldn't find a post on this page.\n\nOpen the post on its own page first (click its timestamp), then click this bookmark again.");
+      return;
+    }
+
+    var payload = JSON.stringify({ text: text, images: images, url: url, date: date });
+    window.open(SITE + '#' + btoa(unescape(encodeURIComponent(payload))), '_blank');
+  } catch (err) {
+    alert('Capture failed: ' + err.message);
+  }
+}
+
+const siteUrl = location.origin + location.pathname;
+document.getElementById('bookmarklet').href =
+  'javascript:' + encodeURIComponent(`(${linkedInCapture.toString()})(${JSON.stringify(siteUrl)});`);
+
+// ==========================================================
+// HELPERS
+// ==========================================================
+const $ = (id) => document.getElementById(id);
+
+const encodeB64 = (str) => {
+  const bytes = new TextEncoder().encode(str);
+  let bin = '';
+  for (let i = 0; i < bytes.length; i += 0x8000) {
+    bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+  }
+  return btoa(bin);
+};
+
+const decodeB64 = (b64) =>
+  new TextDecoder().decode(Uint8Array.from(atob(b64), (c) => c.charCodeAt(0)));
+
+const log = (msg, cls = '') => {
+  const el = $('log');
+  el.classList.remove('hidden');
+  const line = document.createElement('span');
+  if (cls) line.className = cls;
+  line.textContent = msg + '\n';
+  el.appendChild(line);
+};
+
+const gh = async (path, options = {}) => {
+  const res = await fetch(`${API}/${path}`, {
+    ...options,
+    headers: {
+      Authorization: `Bearer ${$('token').value.trim()}`,
+      Accept: 'application/vnd.github+json',
+      ...(options.headers || {}),
+    },
+  });
+  if (res.status === 404) return null;
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(`GitHub ${res.status}: ${body.message || res.statusText}`);
+  }
+  return res.json();
+};
+
+const putFile = async (path, contentB64, message) => {
+  const existing = await gh(`${path}?ref=${REPO_BRANCH}`);
+  return gh(path, {
+    method: 'PUT',
+    body: JSON.stringify({
+      message,
+      content: contentB64,
+      branch: REPO_BRANCH,
+      ...(existing && existing.sha ? { sha: existing.sha } : {}),
+    }),
+  });
+};
+
+// ==========================================================
+// TOKEN
+// ==========================================================
+$('token').value = localStorage.getItem('gh_token') || '';
+$('save-token').addEventListener('click', () => {
+  localStorage.setItem('gh_token', $('token').value.trim());
+  $('save-token').textContent = 'Saved ✓';
+  setTimeout(() => ($('save-token').textContent = 'Save token on this device'), 2000);
+});
+
+// ==========================================================
+// LOAD CAPTURED POST
+// ==========================================================
+let images = [];
+
+const renderImages = () => {
+  const box = $('images');
+  box.innerHTML = '';
+  $('no-images').classList.toggle('hidden', images.length > 0);
+  images.forEach((src, i) => {
+    const row = document.createElement('div');
+    row.className = 'img-row';
+
+    const thumb = document.createElement('img');
+    thumb.src = src;
+    thumb.alt = '';
+
+    const label = document.createElement('span');
+    label.textContent = src;
+
+    const remove = document.createElement('button');
+    remove.type = 'button';
+    remove.textContent = '×';
+    remove.title = 'Remove this image';
+    remove.addEventListener('click', () => {
+      images.splice(i, 1);
+      renderImages();
+    });
+
+    row.append(thumb, label, remove);
+    box.appendChild(row);
+  });
+};
+
+if (location.hash.length > 1) {
+  try {
+    const post = JSON.parse(decodeB64(location.hash.slice(1)));
+    $('date').value = post.date || new Date().toISOString().slice(0, 10);
+    $('text').value = post.text || '';
+    $('url').value = post.url || '';
+    images = post.images || [];
+    renderImages();
+    $('review').classList.remove('hidden');
+    $('howto').classList.add('hidden');
+    // Keep setup visible if there's no token yet — otherwise there'd be
+    // nowhere to enter one without discarding the capture.
+    if (localStorage.getItem('gh_token')) $('setup').classList.add('hidden');
+  } catch (err) {
+    alert('That capture link looks corrupted. Try clicking the bookmark again.');
+  }
+}
+
+$('discard').addEventListener('click', () => {
+  location.href = location.pathname;
+});
+
+// ==========================================================
+// PUBLISH
+// ==========================================================
+$('publish').addEventListener('click', async () => {
+  const btn = $('publish');
+  $('log').innerHTML = '';
+
+  if (!$('token').value.trim()) {
+    log('No GitHub token — go back to setup and add one.', 'err');
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Publishing…';
+
+  try {
+    const date = $('date').value || new Date().toISOString().slice(0, 10);
+
+    // --- 1. copy images into the repo so they don't rot -----------------
+    // LinkedIn's CDN URLs are signed and expire. If the browser lets us
+    // read the bytes we commit our own copy; if CORS blocks it we keep the
+    // remote URL and say so, rather than silently shipping a dead image.
+    const finalImages = [];
+    for (let i = 0; i < images.length; i++) {
+      const src = images[i];
+      try {
+        const blob = await fetch(src).then((r) => {
+          if (!r.ok) throw new Error(`HTTP ${r.status}`);
+          return r.blob();
+        });
+        const ext = (blob.type.split('/')[1] || 'jpg').replace('jpeg', 'jpg');
+        const path = `assets/posts/${date}-${i + 1}.${ext}`;
+        const b64 = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result.split(',')[1]);
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        });
+        await putFile(path, b64, `Add image for LinkedIn post ${date}`);
+        finalImages.push(path);
+        log(`✓ saved ${path}`, 'ok');
+      } catch (err) {
+        finalImages.push(src);
+        log(`! couldn't copy image ${i + 1} (${err.message}) — using LinkedIn's URL, which may expire`, 'warn');
+      }
+    }
+
+    // --- 2. merge into posts.json --------------------------------------
+    const existing = await gh(`posts.json?ref=${REPO_BRANCH}`);
+    let data = { posts: [] };
+    if (existing) {
+      try {
+        data = JSON.parse(decodeB64(existing.content.replace(/\n/g, '')));
+      } catch {
+        log('! posts.json was unreadable — starting a fresh one', 'warn');
+      }
+    }
+
+    const post = {
+      date,
+      text: $('text').value,
+      images: finalImages,
+      url: $('url').value,
+    };
+
+    // Re-publishing the same post updates it instead of duplicating.
+    const posts = (data.posts || []).filter((p) => !post.url || p.url !== post.url);
+    posts.unshift(post);
+    posts.sort((a, b) => (a.date < b.date ? 1 : -1));
+
+    const payload = {
+      updated: new Date().toISOString(),
+      posts: posts.slice(0, KEEP_POSTS),
+    };
+
+    await putFile(
+      'posts.json',
+      encodeB64(JSON.stringify(payload, null, 2) + '\n'),
+      `Add LinkedIn post ${date}`
+    );
+
+    log('✓ published — live in about a minute once Pages rebuilds', 'ok');
+    btn.textContent = 'Published ✓';
+  } catch (err) {
+    log(`✗ ${err.message}`, 'err');
+    btn.disabled = false;
+    btn.textContent = 'Publish to site';
+  }
+});
+</script>
+
+</body>
+</html>
