@@ -216,65 +216,92 @@ const API = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents`;
 // ==========================================================
 function linkedInCapture(SITE) {
   try {
+    // Prefer a post container, but fall back to the whole page. We do NOT
+    // depend on exact class names — LinkedIn changes them constantly — so
+    // everything below works by heuristic (longest text block, image URL
+    // shape) rather than by a fixed selector.
     var root =
-      document.querySelector('.feed-shared-update-v2') ||
-      document.querySelector('.fie-impression-container') ||
+      document.querySelector('[class*="feed-shared-update-v2"]') ||
+      document.querySelector('[class*="fie-impression-container"]') ||
       document.querySelector('main [data-urn]') ||
+      document.querySelector('main') ||
       document.body;
 
-    var textEl = root.querySelector(
-      '.update-components-text, .feed-shared-update-v2__description, ' +
-      '.feed-shared-inline-show-more-text, [data-test-id*="commentary"]'
+    // --- text: pick the longest visible block that looks like post body ---
+    var text = '';
+    var candidates = root.querySelectorAll(
+      '[class*="update-components-text"], [class*="feed-shared-text"], ' +
+      '[class*="commentary"], [data-test-id*="commentary"], ' +
+      'span[dir="ltr"], p[dir="ltr"]'
     );
-    var text = textEl ? textEl.innerText : '';
-    text = text.replace(/\s*…\s*more\s*$/i, '').replace(/\s*see more\s*$/i, '').trim();
-
-    var seen = {};
-    var images = [].slice.call(root.querySelectorAll(
-      '.update-components-image img, .feed-shared-image img, ' +
-      'img.ivm-view-attr__img--centered, .update-components-linkedin-video img'
-    )).map(function (i) {
-      return i.currentSrc || i.src || '';
-    }).filter(function (u) {
-      if (!u || u.indexOf('licdn') === -1) return false;
-      if (/profile-displayphoto|company-logo|profile-framedphoto/.test(u)) return false;
-      if (seen[u]) return false;
-      seen[u] = 1;
-      return true;
-    });
-
-    var urn = (root.getAttribute && (root.getAttribute('data-urn') || root.getAttribute('data-id'))) || '';
-    if (!/urn:li:(activity|share|ugcPost):\d+/.test(urn)) {
-      var inUrl = location.href.match(/urn:li:(?:activity|share|ugcPost):\d+/);
-      if (inUrl) {
-        urn = inUrl[0];
-      } else {
-        var el = document.querySelector('[data-urn*="activity"], [data-id*="activity"]');
-        urn = el ? (el.getAttribute('data-urn') || el.getAttribute('data-id') || '') : '';
-      }
+    for (var c = 0; c < candidates.length; c++) {
+      var t = (candidates[c].innerText || '').trim();
+      if (t.length > text.length) text = t;
     }
-    var url = /urn:li:(activity|share|ugcPost):\d+/.test(urn)
-      ? 'https://www.linkedin.com/feed/update/' + urn + '/'
+    text = text
+      .replace(/\s*…?\s*(see more|more)\s*$/i, '')
+      .replace(/\shashtag\s/gi, ' ')
+      .trim();
+
+    // --- images: any LinkedIn media image, excluding avatars/logos ---------
+    var seen = {};
+    var images = [];
+    var imgs = root.querySelectorAll('img');
+    for (var k = 0; k < imgs.length; k++) {
+      var s = imgs[k].currentSrc || imgs[k].src || '';
+      if (!s || s.indexOf('licdn') === -1) continue;
+      if (!/\/dms\/image\/|feedshare/.test(s)) continue;                 // post media path
+      if (/profile-displayphoto|profile-framedphoto|company-logo|profile-banner|EntityPhoto/i.test(s)) continue;
+      var nat = imgs[k].naturalWidth || 0;
+      if (nat > 0 && nat < 100) continue;                                // skip tiny (reactions etc.)
+      var key = s.split('?')[0];
+      if (seen[key]) continue;
+      seen[key] = 1;
+      images.push(s);
+    }
+
+    // --- permalink + activity id (works for /posts/ and /feed/update/) -----
+    var id = '';
+    var urnEl = document.querySelector('[data-urn*="activity"], [data-id*="activity"]');
+    var urnAttr = (root.getAttribute && (root.getAttribute('data-urn') || root.getAttribute('data-id'))) ||
+                  (urnEl && (urnEl.getAttribute('data-urn') || urnEl.getAttribute('data-id'))) || '';
+    var m = urnAttr.match(/(\d{15,})/) ||                 // from data-urn
+            location.href.match(/(?:activity[:-]|share[:-]|ugcPost[:-]|-)(\d{15,})/); // from URL
+    if (m) id = m[1];
+
+    var url = id
+      ? 'https://www.linkedin.com/feed/update/urn:li:activity:' + id + '/'
       : location.href.split('?')[0];
 
+    // --- date from the activity id's embedded timestamp --------------------
     var date = new Date().toISOString().slice(0, 10);
-    var id = urn.match(/(\d{15,})/);
     if (id && typeof BigInt === 'function') {
       try {
-        var d = new Date(Number(BigInt(id[1]) >> BigInt(22)));
+        var d = new Date(Number(BigInt(id) >> BigInt(22)));
         if (d.getFullYear() > 2010 && d.getTime() < Date.now() + 86400000) {
           date = d.toISOString().slice(0, 10);
         }
       } catch (e) { /* fall back to today */ }
     }
 
-    if (!text && !images.length) {
-      alert("Couldn't find a post on this page.\n\nOpen the post on its own page first (click its timestamp), then click this bookmark again.");
-      return;
+    // Always hand off to the editor — even a partial/empty grab lands you
+    // there with the correct link + date so you can paste the rest.
+    if (!text) {
+      alert("Heads up: couldn't auto-read the post text (LinkedIn may have changed its layout).\n\nOpening the editor anyway with the date and link filled in — just paste the text there.");
     }
 
     var payload = JSON.stringify({ text: text, images: images, url: url, date: date });
-    window.open(SITE + '#' + btoa(unescape(encodeURIComponent(payload))), '_blank');
+    var link = SITE + '#' + btoa(unescape(encodeURIComponent(payload)));
+    var win = window.open(link, '_blank');
+    if (!win) {
+      // Popup blocked — copy the link so nothing is lost.
+      try {
+        navigator.clipboard.writeText(link);
+        alert('Popup blocked. The capture link was copied to your clipboard — paste it into a new tab.');
+      } catch (e) {
+        prompt('Popup blocked. Copy this link and open it in a new tab:', link);
+      }
+    }
   } catch (err) {
     alert('Capture failed: ' + err.message);
   }
