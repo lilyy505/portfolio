@@ -3,18 +3,13 @@
   "posts": [
     {
       "date": "2026-07-22",
+      "added": "2026-07-23T21:07:05.939Z",
       "text": "I'm excited to be at the NVIDIA x Rewriting the Code event coming up July 28th! NVIDIA is honestly what got me into engineering in the first place. I definitely spent way more hours than I'll admit gaming with NVIDIA before I ever thought about studying EECS at Berkeley, and now I'm looking forward to seeing the other side of it.\n\nIf you'll also be there, or just want to talk projects, gaming, or opportunities in the space, drop a comment or send me a message. I'd love to connect!\n\n#WomenInTech #RewritingTheCode #NVIDIA",
       "images": [
         "assets/posts/2026-07-22-1.jpg",
         "assets/posts/2026-07-22-2.jpg"
       ],
-      "url": "https://www.linkedin.com/feed/update/urn:li:activity:7485591826008129536/"
-    },
-    {
-      "date": "2026-07-18",
-      "text": "This is a sample post so you can see the layout. Replace this file's contents with your real posts — or let the updater fill it in automatically.\n\nLine breaks are preserved, so posts read the way they do on LinkedIn.",
-      "images": [],
-      "url": "https://www.linkedin.com/in/lilyynguyy/recent-activity/all/"
+      "url": "https://www.linkedin.com/posts/lilyynguyy_womenintech-rewritingthecode-nvidia-share-7485591826008129536-aMms/"
     }
   ]
 }

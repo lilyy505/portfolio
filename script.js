@@ -5,6 +5,30 @@
 // ==========================================================
 const MAX_POSTS = 3;
 
+// Newest post date first.
+const byDateDesc = (a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0);
+
+// Choose which posts appear on the page: at most MAX_POSTS, ordered by date,
+// but the most recently uploaded post is always kept even if an older date
+// would otherwise push it out of the top 3.
+const selectPosts = (all) => {
+  if (all.length <= MAX_POSTS) return [...all].sort(byDateDesc);
+
+  let newest = all[0];
+  all.forEach((p) => {
+    if ((p.added || '') > (newest.added || '')) newest = p;
+  });
+
+  const sorted = [...all].sort(byDateDesc);
+  let shown = sorted.slice(0, MAX_POSTS);
+  if (!shown.includes(newest)) {
+    shown = sorted.slice(0, MAX_POSTS - 1);
+    shown.push(newest);
+    shown.sort(byDateDesc);
+  }
+  return shown;
+};
+
 const formatDate = (iso) => {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return iso || '';
@@ -82,7 +106,7 @@ const renderFeed = async () => {
     const res = await fetch(`posts.json?t=${Date.now()}`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
-    const posts = (data.posts || []).slice(0, MAX_POSTS);
+    const posts = selectPosts(data.posts || []);
 
     if (!posts.length) {
       showState('No posts yet.');

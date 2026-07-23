@@ -269,9 +269,13 @@ function linkedInCapture(SITE) {
             location.href.match(/(?:activity[:-]|share[:-]|ugcPost[:-]|-)(\d{15,})/); // from URL
     if (m) id = m[1];
 
-    var url = id
-      ? 'https://www.linkedin.com/feed/update/urn:li:activity:' + id + '/'
-      : location.href.split('?')[0];
+    // Prefer the page's own permalink (the /posts/ or /feed/update/ URL you're
+    // viewing) — it reliably opens the post. Only synthesize from the id when
+    // we're somewhere else (e.g. the feed) and have nothing better.
+    var clean = location.href.split('?')[0];
+    var url = /linkedin\.com\/(posts|feed\/update)\//.test(clean)
+      ? clean
+      : (id ? 'https://www.linkedin.com/feed/update/urn:li:activity:' + id + '/' : clean);
 
     // --- date from the activity id's embedded timestamp --------------------
     var date = new Date().toISOString().slice(0, 10);
@@ -493,6 +497,7 @@ $('publish').addEventListener('click', async () => {
 
     const post = {
       date,
+      added: new Date().toISOString(),   // when it was published to the site
       text: $('text').value,
       images: finalImages,
       url: $('url').value,
