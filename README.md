@@ -26,13 +26,30 @@ and swap the placeholder text for your own. A few specific spots:
 
 The LinkedIn section renders from `posts.json`. You never edit HTML to add a post.
 
-### Why it isn't fully automatic
-LinkedIn has no API that lets a website read your own personal posts — the access
-individual developers can get is write-only (post *to* LinkedIn). Reading member posts
-requires restricted partner access. The usual workaround, a bot that logs in with your
-session cookie and scrapes, breaks LinkedIn's User Agreement and can get your account
-restricted. So this uses a one-click capture from your own browser instead: you're just
-reading a page you're already looking at, and you approve each post before it's public.
+### Why it isn't fully automatic (checked July 2026)
+You *can* log into LinkedIn via OAuth — that part is self-serve and works. It just doesn't
+return your posts. The self-serve scopes for a personal account are:
+
+- `openid` / `profile` / `email` — name, photo, email. No posts.
+- `w_member_social` — **write only**: create a post on behalf of the member.
+
+The scope that reads your own posts, `r_member_social`, is a **closed permission** —
+select partners only, and LinkedIn isn't accepting access requests for it. There's no
+application path for an individual. So logging in succeeds and hands you a key that only
+opens the outbound direction.
+
+The only thing that reads posts is a bot logging in with your session cookie and scraping.
+That breaks LinkedIn's User Agreement and risks getting your account restricted — including
+via third-party tools (Taplio, Phantombuster, LinkedIn→RSS bridges), which do exactly that
+under the hood. Not worth it for the account recruiters look at.
+
+Hence one-click capture from your own browser: you're reading a page you already have open,
+and you approve each post before it goes public.
+
+> If you ever want the opposite direction — compose on this site and have it publish to
+> LinkedIn *and* the portfolio in one action — that's fully supported via `w_member_social`.
+> It needs a small serverless function for the OAuth token exchange, re-auth every ~60 days,
+> and you'd give up @-mentions and polls (the API can't do them).
 
 ### Setup (once)
 1. Open `capture.html` on your live site: `https://lilyy505.github.io/portfolio/capture.html`
