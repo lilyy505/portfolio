@@ -1,11 +1,11 @@
-# Your Personal Site — Foundation
+# My Personal Website
 
 ## What's here
-- `index.html` — page structure and all placeholder content
-- `styles.css` — all styling (dark, circuit/hardware-inspired theme)
-- `script.js` — renders the LinkedIn feed + highlights the active nav item as you scroll
-- `posts.json` — your LinkedIn posts (the LinkedIn section reads from this file)
-- `capture.html` — private tool for publishing a new post (not linked from the site)
+- `About Me` — page structure and all placeholder content
+- `LinkedIn Posts` — all styling (dark, circuit/hardware-inspired theme)
+- `Experience` — renders the LinkedIn feed + highlights the active nav item as you scroll
+- `Projects` — your LinkedIn posts (the LinkedIn section reads from this file)
+- `WIP` — private tool for publishing a new post (not linked from the site)
 
 ## How to fill in your content
 Everything you need to replace is in `index.html`, in plain English placeholders like
